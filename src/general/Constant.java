@@ -29,4 +29,5 @@ public class Constant {
 	public static final int SIM_WAN = 10000;
 	public static final String IP="IP Layer";
 	public static final String OPTICAL="optical layer";
+	public static int NUM=0;
 }

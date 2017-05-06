@@ -362,8 +362,8 @@ public class Request {
 	public void releaseResource() {
 		// TODO Auto-generated method stub
 
-		for (int i = this.getStartIndex(); i < this.getStartIndex() + this.getSlotNum(); i++) {
-			for (Link link : this.getWorkRoute().getLinklist()) {
+		for (Link link : this.getWorkRoute().getLinklist()) {
+			for (int i = this.getStartIndex(); i < this.getStartIndex() + this.getSlotNum(); i++) {		
 				link.getSlotsArray().get(i).setStatus(0);
 			}
 		}
@@ -373,18 +373,15 @@ public class Request {
 	public void releaseResource(Layer ipLayer) {
 		// TODO Auto-generated method stub
 		if (this.getLayer().equals(Constant.OPTICAL)) {
-			for (int i = this.getStartIndex(); i < this.getStartIndex() + this.getSlotNum(); i++) {
-				for (Link link : this.getWorkRoute().getLinklist()) {
-					link.getSlotsArray().get(i).setStatus(0);
+			for (Link link : this.getWorkRoute().getLinklist()) {
+				for (int i = this.getStartIndex(); i < this.getStartIndex() + this.getSlotNum(); i++) {					
+					link.getSlotsArray().get(i).setStatus(0);			
 				}
 			}
 			Iterator<String> itr = ipLayer.getLinklist().keySet().iterator();
 			while (itr.hasNext()) {
 				Link link = (Link) (ipLayer.getLinklist().get(itr.next()));
-				if (((link.getNodeA().getName().equals(this.getNodepair().getSrcNode().getName())
-						&& (link.getNodeB().getName().equals(this.getNodepair().getDesNode().getName()))))
-						|| ((link.getNodeB().getName().equals(this.getNodepair().getSrcNode().getName())
-								&& (link.getNodeA().getName().equals(this.getNodepair().getDesNode().getName()))))) {
+				if (link.getName().equals(this.getNodepair().getName())) {
 					link.getVirtualLinkList().remove(this.getWorkVLink());
 					break;
 				}
@@ -395,6 +392,7 @@ public class Request {
 				for(VirtualLink vLink:link.getVirtualLinkList()){
 					if(this.getWorkVtLinkList().contains(vLink)){
 						vLink.setRemanCapacity(vLink.getRemanCapacity()+this.getRequestRate());
+						break;
 					}
 				}
 			}

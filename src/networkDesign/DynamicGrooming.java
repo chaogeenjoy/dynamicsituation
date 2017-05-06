@@ -25,8 +25,8 @@ public class DynamicGrooming {
 	 *          6：否则的话，新建光路
 	 * 
 	 */
-	public boolean dynamicGrroming(Request request, Layer ipLayer, Layer optLayer) {
-		boolean grooming=false;
+	public void dynamicGrroming(Request request, Layer ipLayer, Layer optLayer) {
+		
 		NodePair currentnodePair=request.getNodepair();
 		Node srcNode=currentnodePair.getSrcNode();
 		Node destNode=currentnodePair.getDesNode();
@@ -61,28 +61,31 @@ public class DynamicGrooming {
 		 *     3：更新链路的剩余容量信息
 		 */
 		if(newRoute0.getLinklist().size()!=0){
-			grooming=true;
-//			newRoute0.OutputRoute_node(newRoute0);			
 			request.setWorkRoute(newRoute0);
 			request.setLayer(Constant.IP);//代表该request是在IP层的
+			Constant.NUM++;
+			/*grooming=true;
+//			newRoute0.OutputRoute_node(newRoute0);			
+			*/
+			
 			
 			for(Link link:newRoute0.getLinklist()){
 				request.getWorkVtLinkList().add(link.getTempVirtualLink());			
 				for(VirtualLink vLink:link.getVirtualLinkList()){
 					if(vLink.equals(link.getTempVirtualLink())){
 						vLink.setRemanCapacity(vLink.getRemanCapacity()-request.getRequestRate());
-						link.setTempVirtualLink(null);
+//						link.setTempVirtualLink(null);
 						break;
 					}
 				}							
 			}
-			
+		/*	
 			//将tempvirtuallink设置为空，以便回收
 			Iterator<String> it0=ipLayer.getLinklist().keySet().iterator();
 			while(it0.hasNext()){
 				Link link=(Link) (ipLayer.getLinklist().get(it0.next()));
 				link.setTempVirtualLink(null);
-			}
+			}*/
 			
 		}else{
 			/*
@@ -95,7 +98,6 @@ public class DynamicGrooming {
 			DynamicRSA dRSA=new DynamicRSA();
 			dRSA.SWPbasedRSA(request, optLayer);
 			if(request.getWorkRoute().getLinklist().size()!=0){
-				grooming=true;
 //				System.out.println("当前需求在光层RSA成功");
 				String name=srcNode.getName()+'-'+destNode.getName();
 				
@@ -134,7 +136,6 @@ public class DynamicGrooming {
 			
 		}
 		
-		return grooming;
 
 	}
 	

@@ -9,9 +9,8 @@ import general.Constant;
 import network.Layer;
 import network.NodePair;
 import networkDesign.DynamicGrooming;
-import networkDesign.DynamicRSA;
 
-public class DynamicRSAtester {
+public class DynamicGroomingTester {
 	public static void main(String[] args) {
 		double[] trafficLoadList={1,10,15};
 		for(int i=0;i<trafficLoadList.length;i++){
@@ -57,11 +56,11 @@ public class DynamicRSAtester {
 			int totalBlockNum=0; 
 			int totalRate=0;
 			int totalBlockRate=0;
-			while((requestNum<=Constant.SIM_WAN)&&(requestList.size()!=0)){
+			while((requestNum<=10*Constant.SIM_WAN)&&(requestList.size()!=0)){
 				Request currentRequest=requestList.get(0);
 				if(currentRequest.getReqType()==Constant.ARRIVAL){
 					requestNum++;		
-					if(requestNum%(Constant.SIM_WAN/5)==0){
+					if(requestNum%(Constant.SIM_WAN)==0){
 						System.out.println("第"+requestNum+"个，\t已经阻塞的个数为：  "+totalBlockNum);
 					}
 					totalRate+=currentRequest.getRequestRate();
@@ -79,9 +78,17 @@ public class DynamicRSAtester {
 						totalBlockNum++;
 						totalBlockRate+=currentRequest.getRequestRate();
 					}else{
-						departRequest.setSlotNum(currentRequest.getSlotNum());
-						departRequest.setStartIndex(currentRequest.getStartIndex());
-						departRequest.setWorkRoute(currentRequest.getWorkRoute());
+						if(currentRequest.getLayer().equals(Constant.OPTICAL)){
+							departRequest.setLayer(currentRequest.getLayer());
+							departRequest.setSlotNum(currentRequest.getSlotNum());
+							departRequest.setStartIndex(currentRequest.getStartIndex());
+							departRequest.setWorkRoute(currentRequest.getWorkRoute());
+							departRequest.setWorkVLink(currentRequest.getWorkVLink());
+						}else{
+							departRequest.setLayer(currentRequest.getLayer());
+							departRequest.setWorkRoute(currentRequest.getWorkRoute());
+							departRequest.setWorkVtLinkList(currentRequest.getWorkVtLinkList());
+						}
 					}
 					
 					
@@ -97,15 +104,14 @@ public class DynamicRSAtester {
 					if(currentRequest.getWorkRoute().getLinklist().size()!=0){
 						currentRequest.releaseResource(ipLayer);
 					}
-					
-					
+									
 					requestList.remove(0);
 					
 				}
 			}
 			
-			
-			System.out.println("阻塞请求总数为："+totalBlockNum+"没阻塞的："+(requestNum-totalBlockNum-1));
+			System.out.println("IP层路由成功的请求总数为："+Constant.NUM);
+			System.out.println("阻塞请求总数为："+totalBlockNum+"\t没阻塞的："+(requestNum-totalBlockNum-1));
 			System.out.println("阻塞率为："+((double)100*totalBlockRate/totalRate)+"%");
 		}
 	}

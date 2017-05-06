@@ -13,7 +13,7 @@ import networkDesign.DynamicRSA;
 
 public class DynamicRSAtester {
 	public static void main(String[] args) {
-		double[] trafficLoadList={1,10,15};
+		double[] trafficLoadList={10};
 		for(int i=0;i<trafficLoadList.length;i++){
 			double erlangLoad=trafficLoadList[i];
 			System.out.println("**************************\n erlang load ="+erlangLoad+"\n"
@@ -23,8 +23,6 @@ public class DynamicRSAtester {
 			Layer ipLayer=new Layer("IP",0,null);
 			optLayer.readTopology("E:\\其他\\RPtopology\\NODE6.csv");
 			optLayer.generateNodepairs();
-			ipLayer.copyNodes(optLayer);
-			ipLayer.generateNodepairs();
 			
 			
 			ArrayList<Request> requestList=new ArrayList<Request>();
@@ -33,9 +31,9 @@ public class DynamicRSAtester {
 			
 			Random randTime=new Random(1);  
 			Random randRate=new Random(3);
-			Iterator<String> itr=ipLayer.getNodepairlist().keySet().iterator();
+			Iterator<String> itr=optLayer.getNodepairlist().keySet().iterator();
 			while(itr.hasNext()){
-				NodePair nodePair=(NodePair)(ipLayer.getNodepairlist().get(itr.next()));
+				NodePair nodePair=(NodePair)(optLayer.getNodepairlist().get(itr.next()));
 				double arriveTime=1/erlangLoad*(-Math.log(randTime.nextDouble()));
 				int rate=randRate.nextInt(391)+10;//10到400之间
 				Request request=new Request(nodePair, rate, arriveTime, arriveTime-Math.log(randTime.nextDouble()), Constant.ARRIVAL);	
@@ -72,7 +70,7 @@ public class DynamicRSAtester {
 					DynamicRSA dyRSA=new DynamicRSA();
 					dyRSA.SWPbasedRSA(currentRequest, optLayer);*/
 					DynamicGrooming dnGrooming=new DynamicGrooming();
-					dnGrooming.dynamicGrroming(currentRequest, ipLayer, optLayer);
+					boolean grooming=dnGrooming.dynamicGrroming(currentRequest, ipLayer, optLayer);
 					
 					
 					if(currentRequest.getWorkRoute().getLinklist().size()==0){
