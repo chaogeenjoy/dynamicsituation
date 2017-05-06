@@ -1,0 +1,15 @@
+IP 层占用的是虚拟链路，需要把该虚拟链路加到request中去
+      break down这条request的时候，要区分是IP还是光层
+          IP层：将各个Virtual link的容量回复就好了
+          光层：将各个link的slot恢复，同时要将该光路删除，所以要存储该request的start index, end index
+          
+
+考虑建立request的时候：
+     先在IP层的剩余拓扑中路由，用每个link里剩余容量最大的虚拟链路。如果成功了，要将该虚拟链路加到request里吧，这样后面再break down 的时候
+                就可以在所存储的路由里找到相应的虚拟链路，然后更新资源了
+                
+                
+对于IP层的业务，在request里既要workroute,也要workVLinkList
+                    workroute用来存储在IP层的路由中的链路信息，workVLinkList用来存储workroute中的链路到底用的是哪条virtual link
+                 
+对于光层的业务，则不需要存储workVLinkList ,因为workroute里头存储的就是光层的链路，也就是物理链路                          
