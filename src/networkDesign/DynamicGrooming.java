@@ -35,14 +35,15 @@ public class DynamicGrooming {
 		Iterator<String> itr0=ipLayer.getLinklist().keySet().iterator();
 		while(itr0.hasNext()){
 			Link link=(Link) (ipLayer.getLinklist().get(itr0.next()));
-			if(link.getVirtualLinkList().size()==0){
+			VirtualLink maxVLink=this.findMaxRemainCap(link);
+			if(maxVLink==null){
 				constraint0.getExcludedLinklist().add(link);
 			}else{
-				this.sortVTLink(link);//查找剩余容量最大的那个给我用，如果不够用就拉到
-				if(link.getVirtualLinkList().get(0).getRemanCapacity()>request.getRequestRate()){//if enough remaining
-					link.setTempVirtualLink(link.getVirtualLinkList().get(0));
-					link.setCost(link.getTempVirtualLink().getCost());
-					link.setLength(link.getTempVirtualLink().getLength());
+				
+				if(maxVLink.getRemanCapacity()>request.getRequestRate()){//if enough remaining
+					link.setTempVirtualLink(maxVLink);
+					link.setCost(maxVLink.getCost());
+					link.setLength(maxVLink.getLength());
 				}else{
 					constraint0.getExcludedLinklist().add(link);
 				}				
@@ -74,19 +75,12 @@ public class DynamicGrooming {
 				for(VirtualLink vLink:link.getVirtualLinkList()){
 					if(vLink.equals(link.getTempVirtualLink())){
 						vLink.setRemanCapacity(vLink.getRemanCapacity()-request.getRequestRate());
-//						link.setTempVirtualLink(null);
+						link.setTempVirtualLink(null);
 						break;
 					}
 				}							
 			}
-		/*	
-			//将tempvirtuallink设置为空，以便回收
-			Iterator<String> it0=ipLayer.getLinklist().keySet().iterator();
-			while(it0.hasNext()){
-				Link link=(Link) (ipLayer.getLinklist().get(it0.next()));
-				link.setTempVirtualLink(null);
-			}*/
-			
+	
 		}else{
 			/*
 			 * 如果路由失败的话，进行光层的RSA：
@@ -98,7 +92,6 @@ public class DynamicGrooming {
 			DynamicRSA dRSA=new DynamicRSA();
 			dRSA.SWPbasedRSA(request, optLayer);
 			if(request.getWorkRoute().getLinklist().size()!=0){
-//				System.out.println("当前需求在光层RSA成功");
 				String name=srcNode.getName()+'-'+destNode.getName();
 				
 				Link existLink=null;
@@ -111,12 +104,10 @@ public class DynamicGrooming {
 					}
 				}
 				
-				//这个地方看下说明.txt的12行以后
 				if(existLink==null){
 					Link newLink=new Link(name, ipLayer.getLinklist().size(), null,ipLayer, srcNode, destNode, 1,1);
 					
 					
-//					new VirtualLink(cost, length, capacity, remanCapacity)nature physiclinklist FSnum startindex
 					VirtualLink newVLink=new VirtualLink(name,request.getWorkRoute().getCost(), request.getWorkRoute().getLength(), 
 							request.getSlotNum()*request.getModulationCapcity(), request.getSlotNum()*request.getModulationCapcity()-request.getRequestRate());
 					newVLink.setNature(Constant.WORK);
@@ -161,6 +152,19 @@ public class DynamicGrooming {
 				link.getVirtualLinkList().clear();
 				link.setVirtualLinkList(vtLinkList);
 			}		
+		}
+		
+		
+		public VirtualLink findMaxRemainCap(Link link){
+			VirtualLink tempVirtualLink=null;
+			double maxCost=0;
+			for(VirtualLink vLink:link.getVirtualLinkList()){
+				if(maxCost<vLink.getRemanCapacity()){
+					maxCost=vLink.getRemanCapacity();
+					tempVirtualLink=vLink;
+				}
+			}			
+			return tempVirtualLink;
 		}
 		
 

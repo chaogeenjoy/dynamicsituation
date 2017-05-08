@@ -1,5 +1,8 @@
 package testerSet;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -11,8 +14,12 @@ import network.NodePair;
 import networkDesign.DynamicGrooming;
 
 public class DynamicGroomingTester {
-	public static void main(String[] args) {
-		double[] trafficLoadList={1,10,15};
+	public static void main(String[] args) throws IOException {
+		double[] trafficLoadList={4,5,6};
+
+		String name = "E:/设计/动态traffic grooming/test.csv";
+		BufferedWriter kow = new BufferedWriter(new FileWriter(name));
+		kow.write("\t\t10万次\r\n\n");
 		for(int i=0;i<trafficLoadList.length;i++){
 			double erlangLoad=trafficLoadList[i];
 			System.out.println("**************************\n erlang load ="+erlangLoad+"\n"
@@ -113,7 +120,14 @@ public class DynamicGroomingTester {
 			System.out.println("IP层路由成功的请求总数为："+Constant.NUM);
 			System.out.println("阻塞请求总数为："+totalBlockNum+"\t没阻塞的："+(requestNum-totalBlockNum-1));
 			System.out.println("阻塞率为："+((double)100*totalBlockRate/totalRate)+"%");
+			
+			kow.write("Erlang="+erlangLoad+"\r\nIP层路由成功的请求总数为："+Constant.NUM+"\t阻塞率为："+((double)totalBlockRate/totalRate)+"\n");
+			kow.flush();
+			kow.newLine();
+			
+			
 		}
+		kow.close();
 	}
 	
 	

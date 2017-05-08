@@ -378,14 +378,22 @@ public class Request {
 					link.getSlotsArray().get(i).setStatus(0);			
 				}
 			}
+			
+			Link existLink=null;
 			Iterator<String> itr = ipLayer.getLinklist().keySet().iterator();
 			while (itr.hasNext()) {
 				Link link = (Link) (ipLayer.getLinklist().get(itr.next()));
-				if (link.getName().equals(this.getNodepair().getName())) {
-					link.getVirtualLinkList().remove(this.getWorkVLink());
+				if(link.getName().equals(this.getNodepair().getName())){
+					existLink=link;
 					break;
 				}
 			}
+			
+			existLink.getVirtualLinkList().remove(this.getWorkVLink());
+			if(existLink.getVirtualLinkList().size()==0){
+				ipLayer.getLinklist().remove(existLink);
+			}
+			
 
 		} else if (this.getLayer().equals(Constant.IP)) {
 			for(Link link:this.getWorkRoute().getLinklist()){
