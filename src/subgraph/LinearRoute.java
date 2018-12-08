@@ -3,7 +3,7 @@ package subgraph;
 import java.io.IOException;
 import java.util.ArrayList;
 
- 
+ /* blablabla*/
 import general.file_out_put;
 import network.Link;
 import network.Node;
@@ -18,14 +18,14 @@ public class LinearRoute extends Subgraph {
 	       
 	}
 	
-	public int Equal_link(LinearRoute newroute,Link link){//·µ»ØÊÇ·ñÓĞÏàÍ¬link
+	public int Equal_link(LinearRoute newroute,Link link){//è¿”å›æ˜¯å¦æœ‰ç›¸åŒlink
 		     ArrayList<Link>linklist=newroute.getLinklist();
 		     for(Link link1:linklist){
 		    	 if(link.getName().endsWith(link1.getName()))return 1;
 		     }
 		     return 0;
 	}
-	public void OutputRoute_link(LinearRoute newroute){//Êä³ölink
+	public void OutputRoute_link(LinearRoute newroute){//è¾“å‡ºlink
 		     ArrayList<Link>linklist=newroute.getLinklist();
 		     for(Link link:linklist){
 		    	 if(link.getNodeA().getIndex()<link.getNodeB().getIndex()){
@@ -33,7 +33,7 @@ public class LinearRoute extends Subgraph {
 		    	 }
 		     }
 	}
-	public void OutputRoute_node(LinearRoute newroute,String write_name) throws IOException{//Êä³ö½Úµã
+	public void OutputRoute_node(LinearRoute newroute,String write_name) throws IOException{//è¾“å‡ºèŠ‚ç‚¹
 		file_out_put file=new file_out_put();
 		if(newroute.getNodelist().size()==0){
 			System.out.println("no path to the desnode");
@@ -47,7 +47,7 @@ public class LinearRoute extends Subgraph {
 		}		
 	}
 	
-	public void OutputRoute_node(LinearRoute newroute){//Êä³öÂ·¾¶µÄ½ÚµãĞÅÏ¢
+	public void OutputRoute_node(LinearRoute newroute){//è¾“å‡ºè·¯å¾„çš„èŠ‚ç‚¹ä¿¡æ¯
 		if(newroute.getNodelist().size()==0){
 			System.out.println("no path to the desnode");
 		}
